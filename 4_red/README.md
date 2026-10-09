@@ -11,8 +11,11 @@ es **BirdNET V2.4**, en formato `.tflite`, con su catálogo global de clases, y 
 | [`filtro_regional.md`](filtro_regional.md) | cómo se suma información de qué especies son esperables en la provincia |
 
 La red fue entrenada con datos mayormente del hemisferio norte y no sabe qué aves son comunes en cada provincia
-argentina. El filtro regional le agrega esa información. Además, corregimos de forma puntual algunas confusiones
-sistemáticas entre especies que observamos en campo, ajustando sólo las neuronas de decisión involucradas.
+argentina. El filtro regional le agrega esa información. **El modelo que corre en los equipos es BirdNET V2.4 con
+filtro regional**; eso es todo el flujo.
+
+Aparte, y fuera de cualquier flujo automático: si en el laboratorio notamos una confusión sistemática entre dos
+especies, podemos corregirla a mano. No es parte del funcionamiento del equipo ni se documenta acá.
 
 ---
 

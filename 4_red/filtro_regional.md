@@ -203,4 +203,4 @@ z ← logits_de_la_red(ventana) + Δ
   otras con un freno acotado.
 - **No mira el audio.** Δ depende sólo de la especie y la provincia; el mismo para todos los eventos del equipo.
 - **No corrige confusiones acústicas puntuales.** Si la red confunde dos especies igualmente comunes en la
-  provincia, el filtro no las separa. Esas confusiones se corrigen de forma puntual, ajustando las neuronas de decisión involucradas.
+  provincia, el filtro no las separa. Si se nota una confusión así, se trata a mano en el laboratorio, fuera del sistema.

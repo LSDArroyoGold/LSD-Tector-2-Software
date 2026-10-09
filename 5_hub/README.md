@@ -276,7 +276,7 @@ sequenceDiagram
 
 - **El reporte va directo a la base de reentrenamiento, sin paso intermedio.** El audio original vive en la
   carpeta del equipo, que se poda por retención; al reportarlo se guarda una copia con su etiqueta en una base
-  que la retención no toca. Esa base es la que usamos para mejorar la red.
+  que la retención no toca. El laboratorio la consulta a mano cuando quiere revisar una confusión; ningún proceso automático la usa.
 - **Un reporte se puede retirar.** Quien lo cargó puede deshacerlo; sale también de la base.
 
 ## Escribir horarios y configuración de un equipo
