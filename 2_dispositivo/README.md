@@ -272,6 +272,7 @@ cada minuto:
             actualizar la capa de dispositivo si hay versión nueva
             actualizar el motor si hay versión nueva (con chequeo de salud)
         poner el motor en marcha         # con red o sin ella: se graba igual
+        # el WiFi queda encendido toda la ventana: el motor sube cada detección al instante
 ```
 
 Una sutileza honesta: la hora de inicio **de esta** ventana ya se usó para encender el equipo, así que un cambio de
@@ -310,7 +311,6 @@ cada minuto:
         recalcular horarios                         # ...DESPUÉS recalcular
         registrar en el log: FIN de V, detecciones, próxima ventana
         subir logs; publicar estado
-        apagar WiFi
         pedir al supervisor el próximo encendido
         apagarse
 ```
@@ -511,7 +511,6 @@ fecha fijo) antes de subirlas: son las que se habrían grabado con el reloj perd
 | Motor caído | El gestor de servicios lo reinicia; si persiste, ALERTA en el log al cierre. | Lo que no se grabó mientras estuvo caído. |
 | Pi colgada | El supervisor deja de recibir señales de vida, corta y vuelve a encender. | Lo que estuviera en curso. |
 | Reinicio a mitad de ventana | Al volver, la tolerancia de apertura reabre la ventana si todavía está en horario; las marcas de cierre forzado viejas se limpian al abrir. | Unos minutos. |
-| Arranque con la radio WiFi apagada | El servicio de arranque siempre la vuelve a habilitar, aunque el cierre anterior la haya dejado apagada antes de apagarse. | Nada. |
 | Configuración remota rota | Coordenadas inválidas se ignoran; un archivo ausente es el caso normal. | Nada. |
 | Actualización defectuosa | Ver abajo: el motor vuelve solo a la versión anterior; la capa de dispositivo sólo recibe versiones que pasaron validación. | Nada. |
 | Tarjeta llenándose | Retención local por tamaño, borrando días enteros empezando por el más viejo, y sólo después de una subida exitosa. | Audio local viejo que ya está en el servidor. |
