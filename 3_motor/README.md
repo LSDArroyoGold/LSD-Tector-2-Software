@@ -9,7 +9,7 @@ La idea de diseño más importante: **el motor es una arquitectura que rodea a u
 intercambiable; lo que diseñamos es todo lo que la rodea: cómo se captura el audio sin perder muestras, cómo
 se evita correr la red sobre silencio, cómo se arma un evento completo, cómo se convierte una secuencia de
 ventanas en una sola decisión, qué se hace con cada detección y cómo el equipo se mantiene sano solo en el
-campo. Qué pasa adentro de la red (y las dos mejoras que le hicimos) está en [`../4_red/`](../4_red/README.md).
+campo. Qué pasa adentro de la red (y el filtro regional que le sumamos) está en [`../4_red/`](../4_red/README.md).
 
 Documentos de esta carpeta:
 
@@ -52,7 +52,7 @@ un evento y la red lo identifica, sale para todos lados.
 | Lazo principal | leer bloques del micrófono, alimentar al acumulador, encolar eventos | nunca clasifica ni hace red |
 | Disparador | decir si en un tramo de audio hay energía por encima del piso de ruido | no sabe de especies |
 | Acumulador de eventos | delimitar cada evento acústico (inicio real, fin por silencio o por tope) | no clasifica |
-| Clasificador | cortar el evento en ventanas, correr la red, aplicar correcciones, decidir por racha | no escribe archivos |
+| Clasificador | cortar el evento en ventanas, correr la red, aplicar el filtro regional, decidir por racha | no escribe archivos |
 | Exportador | armar nombre y carpeta del archivo según la detección | no codifica audio |
 | Audio | escribir el mp3 | |
 | BirdWeather | publicar la detección en la plataforma pública | |
@@ -149,8 +149,7 @@ El detalle está en [`pseudocodigo_racha.md`](pseudocodigo_racha.md) y el interi
 
 1. El evento se corta en **ventanas de 3 s con paso de 1 s** (solapadas 2 s). La última se completa con
    ceros.
-2. Por cada ventana, la red devuelve un logit por clase. A esos logits ya los produce la red con las
-   **neuronas corregidas** de la corrección puntual (vienen dentro del modelo), se les suma el **término
+2. Por cada ventana, la red devuelve un logit por clase. A esos logits se les suma el **término
    regional Δ** de la provincia del equipo, se pasa por una **sigmoide** con un factor de sensibilidad y se
    **enmascaran las clases que no son aves** (perros, motores, sirenas, ranas, grillos, mamíferos: 101 clases
    del catálogo que nunca pueden ganar). De cada ventana se queda la especie ganadora y su confianza.
@@ -259,9 +258,6 @@ actualización.
 
 Límites conocidos y aceptados:
 
-- **Vocalizaciones graves.** Especies con canto por debajo de 1,5 kHz quedan fuera de la banda del disparador
-  y no lo activan. Se probó agregar un canal grave en paralelo y, medido con el micrófono real, el contraste
-  contra el ruido en esa zona resultó prácticamente nulo.
 - **El chequeo de salud necesita micrófono.** Sin micrófono el grabador no arranca y el actualizador interpreta
   que la versión nueva rompió el servicio, así que vuelve atrás.
 
@@ -274,4 +270,4 @@ Límites conocidos y aceptados:
 | Capa de dispositivo | orden de arrancar y detener el servicio; archivos de configuración del equipo (audio, provincia, BirdWeather, destino) | log de alertas en el log del sistema; mp3 en la carpeta de detecciones (que la capa resume al cerrar la ventana) |
 | Tector Hub (servidor) | versiones nuevas del motor por la rama estable | mp3 con nombre normalizado, uno por detección |
 | BirdWeather | identificador de estación | soundscape + detección |
-| La red (`../4_red`) | un modelo `.tflite` con las neuronas corregidas, sus etiquetas, la lista de no-aves y la base regional | ventanas de 3 s de audio |
+| La red (`../4_red`) | un modelo `.tflite`, sus etiquetas, la lista de no-aves y la base regional | ventanas de 3 s de audio |

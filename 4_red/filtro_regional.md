@@ -97,8 +97,7 @@ flowchart LR
 
 ## 3. Dónde entra en la red
 
-El Δ se suma al logit **después** de la capa de decisión (incluidas las neuronas corregidas, ver
-[`correccion_puntual.md`](correccion_puntual.md)) y **antes** de la sigmoide y de la máscara de no-aves. El
+El Δ se suma al logit **después** de la capa de decisión y **antes** de la sigmoide y de la máscara de no-aves. El
 flujo completo está en el [README](README.md).
 
 ## 4. Fuentes de datos
@@ -204,5 +203,4 @@ z ← logits_de_la_red(ventana) + Δ
   otras con un freno acotado.
 - **No mira el audio.** Δ depende sólo de la especie y la provincia; el mismo para todos los eventos del equipo.
 - **No corrige confusiones acústicas puntuales.** Si la red confunde dos especies igualmente comunes en la
-  provincia, el filtro no las separa. Para eso está la corrección puntual
-  ([`correccion_puntual.md`](correccion_puntual.md)).
+  provincia, el filtro no las separa. Esas confusiones se corrigen de forma puntual, ajustando las neuronas de decisión involucradas.

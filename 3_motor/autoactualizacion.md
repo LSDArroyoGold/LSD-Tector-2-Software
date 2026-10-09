@@ -1,7 +1,7 @@
 # Autoactualización con chequeo de salud y vuelta atrás
 
 Los equipos están en el campo, sin nadie que entre a mirarlos mientras graban. Aun así queremos poder
-corregir el motor (un parámetro, un error, una red con neuronas corregidas) sin ir a buscarlos. La
+corregir el motor (un parámetro, un error, una red nueva) sin ir a buscarlos. La
 autoactualización resuelve eso con una regla que está por encima de todo lo demás:
 
 > **Nunca dejar al equipo sin un motor de detección sano.** Si una versión nueva no pasa el chequeo de salud,

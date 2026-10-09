@@ -422,7 +422,7 @@ sequenceDiagram
     Note over S: dormido; mide la batería cada tanto y guarda el registro
     S->>P: enciende la Pi a la hora pedida
     P->>S: ¿qué hora es? ¿arrancaste sin hora? ¿hubo batería baja?
-    S-->>P: hora, indicadores, registro de batería, versión y autochequeos
+    S-->>P: hora, indicadores, registro de batería
     P->>S: hora corregida (sólo si la Pi tiene una confiable)
     loop mientras la Pi está prendida
         P->>S: señal de vida
@@ -447,7 +447,6 @@ sequenceDiagram
 | Supervisor → Pi | **Modo configuración** | Pulsación larga del botón de reconfiguración. Si la Pi estaba apagada, el supervisor la enciende primero, salvo que la batería no alcance. La Pi pone la marca de primer arranque y reinicia en modo portal. |
 | Supervisor → Pi | **Hora e indicadores** | Al arrancar: su hora, "arranqué sin hora" y "la batería llegó al piso desde la última vez". |
 | Supervisor → Pi | **Registro de batería** | Tensión, corriente y carga acumulada medidas mientras la Pi estaba apagada; la Pi lo sube al servidor. |
-| Supervisor → Pi | **Salud propia** | Versión de su firmware y autochequeos; la Pi los incluye en el estado. |
 
 Reglas de software de la Pi:
 
@@ -465,10 +464,9 @@ Reglas de software de la Pi:
 
 | Lo que dice el supervisor al arrancar | Interpretación | Qué hace el Hub |
 |---|---|---|
-| Sin hora + batería llegó al piso | La batería se agotó por completo y volvió con el sol | Alerta al laboratorio |
+| Sin hora + batería llegó al piso | La batería se agotó por completo y volvió con el sol | Lo registra |
 | Sin hora, sin batería baja | Reinicio en frío (mantenimiento, reprogramación) | Sólo lo registra |
 | Con hora + batería llegó al piso | Hubo un cierre por batería, pero sin agotarse | Sólo lo registra |
-| No contesta o falla un autochequeo | Supervisor enfermo | Alerta al laboratorio |
 
 Hay un caso que el equipo no puede contar: si el supervisor deja de funcionar, la Pi queda apagada para siempre.
 Ese caso lo detecta el Hub por ausencia (ver [`5_hub`](../5_hub/#avisos)).
@@ -505,7 +503,7 @@ fecha fijo) antes de subirlas: son las que se habrían grabado con el reloj perd
 |---|---|---|
 | Batería baja durante una ventana | El supervisor pide apagado; la Pi hace un cierre forzado (sube lo que puede, publica el estado con la marca de cierre forzado) y se apaga. | El resto de esa ventana. |
 | Batería baja a la hora de despertar | El supervisor no enciende la Pi y reintenta más tarde. | Esa ventana. |
-| Batería agotada del todo | Al volver el sol, el supervisor espera a tener margen, enciende la Pi, la Pi recupera la hora de la red y avisa. El Hub alerta al laboratorio. | Las ventanas del apagón. |
+| Batería agotada del todo | Al volver el sol, el supervisor espera a tener margen, enciende la Pi, la Pi recupera la hora de la red y avisa. | Las ventanas del apagón. |
 | Sin red al abrir | Se graba igual. | Nada: el estado del Hub queda viejo un rato. |
 | Sin red al cerrar | Se recalculan los horarios localmente, se agenda el próximo encendido y se apaga. El audio queda en la tarjeta y se reconcilia en la próxima ventana con red. | Nada (hasta que la tarjeta se llene: la retención local sólo borra lo ya subido). |
 | Sin red por días | Sigue grabando y acumulando. Sin hora de red usa la del supervisor. | Nada mientras haya espacio. |

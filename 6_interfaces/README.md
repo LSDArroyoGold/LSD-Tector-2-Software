@@ -195,13 +195,6 @@ entero cada vez.
     "throttled": "0x0"
   },
   "umbral_bateria_v": "…",
-  "supervisor": {
-    "version": "…",
-    "autochequeo_ok": true,
-    "arranque_sin_hora": false,
-    "bateria_llego_al_piso": false,
-    "deriva_reloj_s": 0.0
-  },
   "detecciones_hoy": 0,
   "version_software": "abc1234",
   "software_actualizado": "AAAA-MM-DDThh:mm:ss",
@@ -222,7 +215,6 @@ entero cada vez.
 | `ubicacion` | Coordenadas que usa el equipo. | Mapa, huso horario del equipo, líneas de amanecer y atardecer en estadísticas. |
 | `bateria` | Última medición: tensión del pack, corriente (positiva cargando), carga acumulada, temperatura del procesador y estado de estrangulamiento (`0x0` es limpio; otro valor indica que hubo baja tensión o exceso de temperatura). Puede ser `null` si no hay mediciones. | Página del equipo; alerta de estrangulamiento. |
 | `umbral_bateria_v` | Piso de batería con el que trabaja el supervisor. | Interpretar la curva de batería. |
-| `supervisor` | Salud del supervisor de energía: versión, resultado de sus autochequeos, si arrancó sin hora, si la batería llegó al piso desde el último informe, y la deriva medida de su reloj contra la hora de red. | Alertas al laboratorio (ver [`5_hub`](../5_hub/#avisos)). |
 | `detecciones_hoy` | Cuántos audios generó el motor en el día. | Resumen rápido. |
 | `version_software` | Identificador corto del commit instalado de la capa de dispositivo. | Aviso de "software actualizado"; saber qué corre cada equipo. |
 | `software_actualizado` | Cuándo se instaló esa versión. | Página del equipo. |
@@ -372,7 +364,7 @@ Formas:
 
 - Las líneas `INICIO` y `FIN` son las que el Hub parsea para reconstruir la historia de ventanas de un equipo.
 - Las líneas `ALERTA:` señalan algo que necesita atención humana (el motor caído al cierre, un reloj que no se pudo
-  ajustar, problemas del supervisor). El motor escribe sus propias alertas **en este mismo log**, con el mismo
+  ajustar). El motor escribe sus propias alertas **en este mismo log**, con el mismo
   formato, porque su log interno no sale del equipo.
 - Los mensajes libres registran cambios de identidad (número de serie reasignado), configuración aplicada desde el
   Hub (sin el token completo), actualizaciones y similares.

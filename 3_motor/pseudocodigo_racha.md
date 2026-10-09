@@ -22,7 +22,7 @@ es_no_ave[c]   ← verdadero si la clase c está en la lista de no-aves (101 cla
                   (si la lista nombra una clase inexistente: error de arranque)
 Δ[c]           ← término regional de la provincia del equipo, uno por clase
                   (0 si no hay datos; ver 4_red/filtro_regional.md)
-red            ← intérprete del .tflite (ya trae las neuronas corregidas)
+red            ← intérprete del .tflite 
 ```
 
 ## Una ventana

@@ -21,7 +21,7 @@ principales, con diagramas y pseudocódigo. No contiene el código fuente de los
 | [`1_arquitectura`](1_arquitectura/) | Visión general: la cadena de decisiones, los tres sistemas, principios de diseño y un día del equipo. **Empezar acá.** |
 | [`2_dispositivo`](2_dispositivo/) | La capa que corre en la Raspberry Pi y gobierna el ciclo de vida del equipo: puesta en marcha, ventanas, energía, red, configuración remota y tolerancia a fallas. |
 | [`3_motor`](3_motor/) | El motor de detección (TectorNET-Pi): grabación continua, disparador, eventos, decisión por racha, envío y autoactualización. |
-| [`4_red`](4_red/) | La red neuronal por dentro y sus dos mejoras: corrección puntual de confusiones (regresión logística binaria) y filtro regional. |
+| [`4_red`](4_red/) | La red neuronal por dentro y el filtro regional que corrige su salida según la provincia. |
 | [`5_hub`](5_hub/) | Tector Hub: servidor, aplicación web, usuarios y equipos, reporte de audios mal etiquetados, distribución de actualizaciones. |
 | [`6_interfaces`](6_interfaces/) | Los contratos entre sistemas: carpetas, nombres de archivo, estado del equipo y archivos de configuración. |
 

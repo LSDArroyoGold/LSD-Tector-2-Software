@@ -7,7 +7,7 @@ flowchart LR
     S["Supervisor de energía<br/>(microcontrolador, siempre encendido)"] -->|decide cuándo vive| P["Raspberry Pi<br/>capa de dispositivo"]
     P -->|decide cuándo se graba| M["Motor de detección"]
     M -->|decide cuándo vale la pena<br/>correr la red| R["Red neuronal<br/>BirdNET .tflite"]
-    R --> C["Mejoras de la red<br/>(corrección puntual + filtro regional)"]
+    R --> C["Filtro regional"]
     C -->|decide qué especie es| D["Detección"]
     D --> H["Tector Hub<br/>(servidor + app web)"]
     H -->|horarios, configuración,<br/>actualizaciones| P
@@ -23,12 +23,10 @@ flowchart LR
 3. **El motor decide cuándo vale la pena correr la red.** Graba en continuo, pero sólo invoca a la red cuando un
    disparador barato detecta actividad en la banda de las aves, y clasifica *eventos* completos, no fragmentos
    sueltos. Ver [`3_motor`](../3_motor/).
-4. **La red, con sus dos mejoras, decide qué especie es.** BirdNET es la única pieza que no diseñamos; la
-   tratamos como un cartucho intercambiable y lo rodeamos. Sobre su salida actúan una corrección puntual de
-   confusiones y un filtro regional. Ver [`4_red`](../4_red/).
+4. **La red, con el filtro regional, decide qué especie es.** BirdNET es la única pieza que no diseñamos; la
+   tratamos como un cartucho intercambiable y lo rodeamos. Sobre su salida actúa un filtro regional. Ver [`4_red`](../4_red/).
 5. **Tector Hub cierra el ciclo.** Recibe las detecciones de todos los equipos, las muestra a los usuarios, les
-   permite cambiar horarios y reportar audios mal etiquetados, y distribuye las actualizaciones. Los audios
-   reportados son la materia prima de la corrección puntual. Ver [`5_hub`](../5_hub/).
+   permite cambiar horarios y reportar audios mal etiquetados, y distribuye las actualizaciones. Ver [`5_hub`](../5_hub/).
 
 ## Tres sistemas de software, tres responsabilidades
 
@@ -47,7 +45,7 @@ actualizar cualquiera de ellos sin tocar los demás, mientras respete el contrat
 - **La energía la administra quien no la consume.** La computadora que gasta watts no decide cuándo prenderse:
   lo decide un circuito de microamperes.
 - **La red es intercambiable; lo diseñado es lo que la rodea.** El modelo es un archivo; el disparador, los
-  eventos, la decisión por racha, las correcciones y la logística de datos son nuestros.
+  eventos, la decisión por racha, el filtro regional y la logística de datos son nuestros.
 - **Nada requiere ir al sitio.** Datos, configuración y actualizaciones viajan por la red. Las actualizaciones
   se verifican solas y se revierten si algo falla.
 - **Falla segura.** Ante batería baja, falta de red o un cuelgue, el equipo prioriza sobrevivir y no perder datos:
