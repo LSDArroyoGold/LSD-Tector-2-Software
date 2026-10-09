@@ -39,7 +39,7 @@ de que esta especie esté". Reentrenar una neurona es, entonces, ajustar una reg
 segundos sobre embeddings ya calculados, y ponemos los pesos resultantes en el lugar de los originales.
 
 Lo que cambia respecto del entrenamiento original de BirdNET son los **ejemplos**: además de grabaciones de
-referencia, se usan audios reales de nuestros equipos, y en particular los **falsos positivos confirmados**:
+referencia, se usan audios reales de nuestros equipos, y en particular los **falsos positivos reportados**:
 
 - como **negativos** de la especie confundida (la neurona de Halconcito colorado aprende a *no* responder a
   esos cantos), y
@@ -52,17 +52,12 @@ referencia, se usan audios reales de nuestros equipos, y en particular los **fal
 flowchart LR
     EQ["Equipos en el campo"] -->|"mp3 por detección"| HUB["Tector Hub"]
     HUB --> US["Usuario escucha<br/>y reporta<br/>'mal etiquetado'<br/>(con la especie correcta<br/>si la sabe)"]
-    US --> COLA["Reportes pendientes<br/>en el servidor"]
-    COLA --> CONF{"Confirmación:<br/>alguien del laboratorio<br/>escucha y decide"}
-    CONF -->|"confirmado"| SET["Conjunto de corrección:<br/>(audio, especie que dijo la red,<br/>especie verdadera)"]
-    CONF -->|"rechazado o dudoso"| DESC(["no se usa"])
+    US -->|"directo"| SET["Base de reentrenamiento:<br/>(audio, especie que dijo la red,<br/>especie verdadera)"]
 ```
 
 - **Reportes.** En la aplicación de Tector Hub cualquier usuario con acceso al equipo puede marcar un audio
-  como mal etiquetado. El reporte queda en el servidor junto con el audio y la etiqueta que puso la red.
-- **Confirmación.** Un reporte no entra al entrenamiento por sí solo: alguien del laboratorio lo escucha y
-  confirma cuál es la especie verdadera. Un ejemplo mal etiquetado en el entrenamiento enseñaría el error
-  contrario; por eso sólo se usan los confirmados.
+  como mal etiquetado. El reporte entra **directo** a la base de reentrenamiento, sin paso intermedio, junto con
+  el audio, la etiqueta que puso la red y la que indicó el usuario.
 - **Cuándo se dispara una corrección.** Cuando un mismo par (especie que dijo la red, especie verdadera) se
   acumula de forma sistemática. Un reporte aislado no justifica tocar la red.
 
@@ -73,8 +68,8 @@ verdadera), se arma un conjunto de embeddings con su etiqueta binaria:
 
 | Tipo de ejemplo | Origen | Etiqueta en la neurona de la especie confundida (Halconcito) | Etiqueta en la neurona de la especie verdadera (Hornero) |
 |---|---|---|---|
-| falsos positivos confirmados | reportes de Tector Hub (Hornero etiquetado como Halconcito) | 0 (negativo duro) | 1 |
-| audio de campo confirmado de la especie verdadera | detecciones correctas de nuestros equipos | 0 | 1 |
+| falsos positivos reportados | reportes de Tector Hub (Hornero etiquetado como Halconcito) | 0 (negativo duro) | 1 |
+| audio de campo de la especie verdadera | detecciones correctas de nuestros equipos | 0 | 1 |
 | grabaciones de referencia de Halconcito colorado | colecciones públicas de cantos | 1 | 0 |
 | grabaciones de referencia de Hornero | colecciones públicas de cantos | 0 | 1 |
 | otras especies de la región | colecciones públicas y campo | 0 | 0 |
@@ -161,14 +156,14 @@ flowchart LR
 ## 9. Pseudocódigo
 
 ```
-# Entrada: pares confirmados (audio, especie_dicha, especie_verdadera)
+# Entrada: base de reentrenamiento, pares reportados (audio, especie_dicha, especie_verdadera)
 # Salida: modelo .tflite con algunas neuronas reemplazadas
 
-procedimiento CORREGIR(confirmados, modelo):
-    afectadas ← { especie_dicha, especie_verdadera  para cada par sistemático en confirmados }
+procedimiento CORREGIR(reportados, modelo):
+    afectadas ← { especie_dicha, especie_verdadera  para cada par sistemático en reportados }
 
     # 1. embeddings
-    para cada clip en (confirmados ∪ campo_confirmado ∪ referencia ∪ ajenas ∪ sin_aves):
+    para cada clip en (reportados ∪ campo ∪ referencia ∪ ajenas ∪ sin_aves):
         clip.embeddings ← [ EXTRACTOR(modelo, v) para v en ventanas_3s_paso_1s(clip.audio) ]
         clip.especie    ← su especie verdadera (o "ninguna")
     entrenamiento, validación ← separar clips al azar POR CLIP
@@ -204,6 +199,6 @@ procedimiento CORREGIR(confirmados, modelo):
 
 - No toca el extractor ni ninguna otra neurona.
 - No agrega especies al catálogo ni cambia su orden.
-- No corrige confusiones que no fueron reportadas y confirmadas: es dirigida a propósito.
+- No corrige confusiones que no fueron reportadas: es dirigida a propósito.
 - No reemplaza al filtro regional: este corrige *qué dice el sonido*; el filtro agrega *qué es esperable en
   la provincia*. Ver [`filtro_regional.md`](filtro_regional.md).

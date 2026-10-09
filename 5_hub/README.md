@@ -267,36 +267,32 @@ sequenceDiagram
     participant U as Usuario (rol administrar o propietario)
     participant A as Aplicación
     participant H as Servidor del Hub
-    participant L as Laboratorio
+    participant B as Base de reentrenamiento
     participant M as Motor en los equipos
     U->>A: escucha un canto y toca "reportar"
     A->>H: ruta del audio, tipo, especie sugerida, comentario
     H->>H: valida que la ruta caiga dentro de la carpeta de ESE equipo
-    H->>H: guarda el reporte con especie, confianza y fecha detectadas
-    H->>H: copia el audio a una carpeta de reportados que la retención no toca
-    L->>H: exporta los reportes como planilla
-    L->>L: escucha, confirma, arma el conjunto de corrección
-    L->>L: reentrena las neuronas de las especies confundidas
-    L->>M: nueva versión del motor por la rama estable
+    H->>B: guarda audio + especie detectada + etiqueta del usuario, directo
+    B->>B: cuando un par de especies se acumula, se reentrenan esas neuronas
+    B->>M: nueva versión del motor por la rama estable
 ```
 
 Por qué cada paso:
 
-- **La copia inmediata del audio.** El audio original vive en la carpeta del equipo, que se poda por retención. Un
-  audio que alguien se tomó el trabajo de reportar es exactamente el que no se puede perder: es material de
-  entrenamiento con una etiqueta puesta por una persona.
-- **La revisión es trabajo de laboratorio.** Los reportes se exportan como planilla y se revisan en la computadora,
-  de a decenas, cruzándolos con los audios. Una pantalla de teléfono sería peor para eso.
-- **Un reporte se puede retirar.** Quien lo cargó puede deshacerlo; se borra también la copia.
+- **El reporte va directo a la base de reentrenamiento, sin paso intermedio.** El audio original vive en la
+  carpeta del equipo, que se poda por retención; al reportarlo se guarda una copia con su etiqueta en la base de
+  reentrenamiento, que la retención no toca. La etiqueta la pone el usuario que escuchó el audio: eso es lo que
+  hace escalable el método.
+- **Un reporte se puede retirar.** Quien lo cargó puede deshacerlo; sale también de la base.
 
 ### Cómo alimenta la corrección puntual de la red
 
-Los falsos positivos **confirmados** por el laboratorio son el insumo de la corrección puntual de confusiones
-(documentada con la red neuronal):
+Los falsos positivos reportados son el insumo de la corrección puntual de confusiones (documentada con la red
+neuronal):
 
 ```
 para cada confusión recurrente (especie_detectada → especie_verdadera):
-    negativos(especie_detectada) ← audios reportados y confirmados como "no era esa"
+    negativos(especie_detectada) ← audios reportados como "no era esa"
     positivos(especie_verdadera)  ← los mismos audios, si se sabe cuál era
     reentrenar SÓLO las neuronas de salida de esas especies con una
         regresión logística binaria sobre la representación interna de BirdNET
@@ -305,8 +301,8 @@ publicar la versión corregida del motor → llega a todos los equipos
 ```
 
 El caso prototípico fue el Hornero (*Furnarius rufus*) detectado como Halconcito colorado (*Falco sparverius*). El
-ciclo completo es: **el equipo detecta → el usuario escucha y reporta → el laboratorio confirma → la red se corrige
-→ el equipo detecta mejor**.
+ciclo completo es: **el equipo detecta → el usuario escucha y reporta → el reporte entra a la base de
+reentrenamiento → la red se corrige → el equipo detecta mejor**.
 
 ## Escribir horarios y configuración de un equipo
 

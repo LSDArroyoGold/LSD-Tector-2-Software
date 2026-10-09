@@ -69,7 +69,7 @@ flowchart LR
 | Orden de restablecer | Hub | Capa de dispositivo | Al pedirlo el propietario | En cada arranque |
 | Marca de restablecido | Capa de dispositivo | Hub | Al aplicar la orden | A demanda |
 | Registro del equipo (mensaje) | Capa de dispositivo | Hub | Al abrir y cerrar ventana | Al recibirlo |
-| Reportes de audio | Hub (desde la aplicación) | Laboratorio (exportación) | Al reportar | Al revisar |
+| Reportes de audio | Hub (desde la aplicación) | Base de reentrenamiento (directo) | Al reportar | Al reentrenar |
 
 ## Reglas comunes a todos los archivos
 

@@ -80,7 +80,7 @@ estar altas a la vez.
 
 Para las especies que la red confunde en nuestros sitios, la neurona original se **reemplaza** por una
 reentrenada con una regresión logística binaria sobre el mismo embedding, usando audios mal etiquetados que
-se reportaron en Tector Hub y se confirmaron. El resto de las neuronas queda idéntico. Como la corrección
+se reportaron en Tector Hub. El resto de las neuronas queda idéntico. Como la corrección
 vive adentro del `.tflite`, el motor no se entera: recibe logits como siempre. Detalle en
 [`correccion_puntual.md`](correccion_puntual.md).
 
